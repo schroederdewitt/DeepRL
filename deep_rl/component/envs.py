@@ -23,6 +23,26 @@ except ImportError:
     pass
 
 
+def make_atari_overwrite(env_id):
+    splt = env_id.split("|")
+    env_id = splt[0]
+    env = make_atari(env_id)
+    if len(splt) > 1:
+        splt_id = splt[1]
+        funcType = type(env.step)
+        # Overwrite env action space!
+        if splt[1] == "extra_dangling":
+            def new_step(self, action):
+                return self.step(action[:-1]) # ignore dangling action
+
+            funcType(new_step, env, type(env))
+        elif splt[1] == "extra_duplicate":
+            def new_step(self, action):
+                if action[-1] != 0.0:
+                    action[-2] = 1.0 # duplicate action!
+                return self.step(action[:-1]) # ignore dangling action
+    return env
+
 # adapted from https://github.com/ikostrikov/pytorch-a2c-ppo-acktr/blob/master/envs.py
 def make_env(env_id, seed, rank, episode_life=True):
     def _thunk():
@@ -36,7 +56,7 @@ def make_env(env_id, seed, rank, episode_life=True):
         is_atari = hasattr(gym.envs, 'atari') and isinstance(
             env.unwrapped, gym.envs.atari.atari_env.AtariEnv)
         if is_atari:
-            env = make_atari(env_id)
+            env = make_atari_overwrite(env_id)
         env.seed(seed + rank)
         env = OriginalReturnWrapper(env)
         if is_atari:
