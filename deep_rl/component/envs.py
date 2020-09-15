@@ -47,12 +47,14 @@ def make_atari_overwrite(env_id):
 def make_env(env_id, seed, rank, episode_life=True):
     def _thunk():
         random_seed(seed)
+        #env_id_full = env_id
+        #env_id = env_id.split("|")[0]
         if env_id.startswith("dm"):
             import dm_control2gym
             _, domain, task = env_id.split('-')
             env = dm_control2gym.make(domain_name=domain, task_name=task)
         else:
-            env = gym.make(env_id)
+            env = gym.make(env_id.split("|")[0])
         is_atari = hasattr(gym.envs, 'atari') and isinstance(
             env.unwrapped, gym.envs.atari.atari_env.AtariEnv)
         if is_atari:
