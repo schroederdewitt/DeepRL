@@ -33,14 +33,18 @@ def make_atari_overwrite(env_id):
         # Overwrite env action space!
         if splt[1] == "extra_dangling":
             def new_step(self, action):
-                return self.step(action[:-1]) # ignore dangling action
-
-            funcType(new_step, env, type(env))
+                if action == 4:
+                    action = 3 # note: this is duplicate, not dangling!    
+                return self._step(action) # ignore dangling action
+            env.action_space = Discrete(5)
+            env._step = env.step
+            env.step = new_step.__get__(env, type(env)) #funcType(new_step,env,type(env))
         elif splt[1] == "extra_duplicate":
             def new_step(self, action):
                 if action[-1] != 0.0:
                     action[-2] = 1.0 # duplicate action!
                 return self.step(action[:-1]) # ignore dangling action
+            env.step = new_step
     return env
 
 # adapted from https://github.com/ikostrikov/pytorch-a2c-ppo-acktr/blob/master/envs.py
