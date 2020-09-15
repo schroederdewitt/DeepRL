@@ -643,7 +643,7 @@ if __name__ == '__main__':
     # td3_continuous(game=game)
 
     #game = 'BreakoutNoFrameskip-v4|extra_dangling'
-    game = 'PongNoFrameskip-v4|extra_dangling'
+    game = 'PongNoFrameskip-v4'
     dqn_pixel(game=game, n_step=1, replay_cls=UniformReplay, async_replay=False, save_interval=100000)
     # quantile_regression_dqn_pixel(game=game)
     # categorical_dqn_pixel(game=game)
