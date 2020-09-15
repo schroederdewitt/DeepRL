@@ -31,12 +31,16 @@ def make_atari_overwrite(env_id):
         splt_id = splt[1]
         funcType = type(env.step)
         # Overwrite env action space!
-        if splt[1] == "extra_dangling":
+        if splt[1][:-1] == "extra_dangling":
+            # print("act: ", env.action_space)
+            # quit()
             def new_step(self, action):
-                if action == 4:
-                    action = 3 # note: this is duplicate, not dangling!    
+                #if action == 4:
+                #    action = 3 # note: this is duplicate, not dangling!
+                #print("action:", action)
+                action = action % 6
                 return self._step(action) # ignore dangling action
-            env.action_space = Discrete(5)
+            env.action_space = Discrete(6+6*int(splt[1][-1]))
             env._step = env.step
             env.step = new_step.__get__(env, type(env)) #funcType(new_step,env,type(env))
         elif splt[1] == "extra_duplicate":
