@@ -642,8 +642,8 @@ if __name__ == '__main__':
     # ddpg_continuous(game=game)
     # td3_continuous(game=game)
 
-    game = 'BreakoutNoFrameskip-v4|extra_dangling'
-    dqn_pixel(game=game, n_step=1, replay_cls=UniformReplay, async_replay=False, save_interval=10000)
+    game = 'BreakoutNoFrameskip-v4'#|extra_dangling'
+    dqn_pixel(game=game, n_step=1, replay_cls=UniformReplay, async_replay=False, save_interval=100000)
     # quantile_regression_dqn_pixel(game=game)
     # categorical_dqn_pixel(game=game)
     # rainbow_pixel(game=game, async_replay=False)
